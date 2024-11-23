@@ -1,0 +1,16 @@
+services:
+  terraria:
+    # SET ME
+    # image: terraria:v1.4.4.9
+    container_name: terraria
+    volumes:
+      - ./worlds:/app/worlds
+      - ./serverconfig.txt:/app/serverconfig.txt
+    restart: always
+    environment:
+      # How often to auto save / health check
+      - SLEEP_TIME=300
+      - TTYD_PORT=7681
+    ports:
+      - 7777:7777
+      - 7681:7681

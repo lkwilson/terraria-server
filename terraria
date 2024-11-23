@@ -1,0 +1,49 @@
+#!/bin/sh
+
+
+fail() {
+  echo "Error: $@"
+  exit 1
+}
+
+echo "Starting server"
+tmux new -d -s server ./TerrariaServer.bin.x86_64 -config serverconfig.txt || fail "Failed to start server"
+
+echo "Starting ttyd"
+ttyd -W -p 7681 tmux attach -t server &
+TTYD_PID=$!
+
+stop() {
+  if tmux has-session -t server 2>/dev/null; then
+    echo "Stopping server"
+    tmux send-keys -t server "save" C-m
+    tmux send-keys -t server "exit" C-m
+    while tmux has-session -t server 2>/dev/null; do
+      echo "Waiting for it to stop"
+      sleep 1
+    done
+    echo "Server is gone"
+  else
+    echo "Server was already stopped"
+  fi
+  echo "Stopping ttyd"
+  kill $TTYD_PID 2>/dev/null
+}
+trap stop INT TERM HUP
+
+while true; do
+  echo "Sleeping"
+  sleep $SLEEP_TIME &
+  SLEEP_PID=$!
+  wait $SLEEP_PID
+  echo "Checking health"
+  tmux has-session -t server 2>/dev/null || {
+    echo "Server was gone. Shutting down"
+    kill $SLEEP_PID $TTYD_PID 2>/dev/null
+    wait
+    echo "Sleep and ttyd done"
+    exit 1
+  }
+  echo "Auto saving"
+  tmux send-keys -t server "save" C-m
+done

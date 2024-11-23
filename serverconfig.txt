@@ -1,0 +1,16 @@
+world=/app/worlds/world1.wld
+autocreate=3
+# seed=AwesomeSeed
+worldname=myworld
+difficulty=0
+maxplayers=8
+port=7777
+password=
+motd=
+worldpath=/app/worlds
+# banlist=banlist.txt
+secure=1
+language=en-US
+# upnp=1
+npcstream=60
+priority=0
