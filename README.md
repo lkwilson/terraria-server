@@ -5,5 +5,5 @@ a ttyd to get access to the server console.
 
 # Security
 
-If you put this on the internet, I recommend using tshock instead.
-
+If you put this on the internet, I recommend using tshock instead, and don't
+provide access to the unsecured ttyd port.
